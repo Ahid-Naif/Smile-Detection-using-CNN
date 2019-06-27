@@ -12,7 +12,7 @@ import cv2
 import os
 from utils.cnnhelper import plotHistory
 
-datasetPath = "dataset/"
+datasetPath = "smiles"
 outputModel = "lenet.hdf5"
 numEpochs   = 15
 
@@ -39,8 +39,8 @@ data   = np.array(data, dtype="float") / 255.0
 labels = np.array(labels)
 
 # convert the labels from integers to vectors
-labelEncode = LabelEncoder().fit(labels)
-labels = np_utils.to_categorical(labelEncode.transform(labels), 2)
+labelEncoder = LabelEncoder().fit(labels)
+labels = np_utils.to_categorical(labelEncoder.transform(labels), 2)
 
 # account for skew in the labeled data
 # computes the total number of examples per class
@@ -70,7 +70,7 @@ history = model.fit(trainX, trainY, validation_data=(testX, testY),
 print("[INFO] evaluating network...")
 predictions = model.predict(testX, batch_size=64)
 print(classification_report(testY.argmax(axis=1), predictions.argmax(axis=1),
-                                target_names=le.classes_))
+                                target_names=labelEncoder.classes_))
 
 # save the model to disk
 print("[INFO] serializing network...")
